@@ -5,7 +5,6 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import AppNavigator from './src/navigation/AppNavigator';
 import firebase from '@react-native-firebase/app';
 import '@react-native-firebase/auth';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 // Simple error fallback component
 const ErrorFallback = ({ error, resetError }: { error: Error, resetError: () => void }) => (
@@ -46,11 +45,6 @@ class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasErr
 
 const App = () => {
   useEffect(() => {
-    // Initialize Google Sign-In
-    GoogleSignin.configure({
-      webClientId: '112245194319-7kjhq99hcfgpp2h9hucumpi9rqnk3sno.apps.googleusercontent.com',
-    });
-    
     // Check if Firebase is initialized
     if (!firebase.apps.length) {
       console.log('Firebase initialized');

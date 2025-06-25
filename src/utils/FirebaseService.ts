@@ -4,12 +4,19 @@
 // npm install @react-native-firebase/app @react-native-firebase/auth @react-native-google-signin/google-signin
 
 import auth from '@react-native-firebase/auth';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import * as AuthSession from 'expo-auth-session';
+import * as WebBrowser from 'expo-web-browser';
 
-// Initialize Google Sign-In
-GoogleSignin.configure({
+// Register the web browser redirect handler
+WebBrowser.maybeCompleteAuthSession();
+
+// Google OAuth configuration
+const googleConfig = {
+  expoClientId: '112245194319-7kjhq99hcfgpp2h9hucumpi9rqnk3sno.apps.googleusercontent.com',
   webClientId: '112245194319-7kjhq99hcfgpp2h9hucumpi9rqnk3sno.apps.googleusercontent.com',
-});
+  androidClientId: '112245194319-7kjhq99hcfgpp2h9hucumpi9rqnk3sno.apps.googleusercontent.com',
+  iosClientId: '112245194319-7kjhq99hcfgpp2h9hucumpi9rqnk3sno.apps.googleusercontent.com',
+};
 
 class FirebaseService {
   // Check if user is logged in
@@ -35,16 +42,42 @@ class FirebaseService {
     }
   };
 
-  // Sign in with Google
+  // Sign in with Google using Expo Auth Session
   signInWithGoogle = async () => {
     try {
-      // Get the user ID token
-      const { idToken } = await GoogleSignin.signIn();
-      // Create a Google credential
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      // Sign in with credential
-      return await auth().signInWithCredential(googleCredential);
+      // Configure the auth session
+      const redirectUrl = AuthSession.makeRedirectUri();
+      const discovery = {
+        authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
+        tokenEndpoint: 'https://oauth2.googleapis.com/token',
+        revocationEndpoint: 'https://oauth2.googleapis.com/revoke',
+      };
+      
+      // Start the auth flow
+      const request = new AuthSession.AuthRequest({
+        clientId: googleConfig.webClientId,
+        redirectUri: redirectUrl,
+        responseType: AuthSession.ResponseType.IdToken,
+        scopes: ['openid', 'profile', 'email'],
+      });
+      
+      // Prompt the user to authenticate
+      const result = await request.promptAsync(discovery);
+      
+      if (result.type === 'success') {
+        // Get the ID token from the response
+        const { id_token } = result.params;
+        
+        // Create a credential with the token
+        const credential = auth.GoogleAuthProvider.credential(id_token);
+        
+        // Sign in with the credential
+        return await auth().signInWithCredential(credential);
+      } else {
+        throw new Error('Google sign in was cancelled or failed');
+      }
     } catch (error) {
+      console.error('Google sign in error:', error);
       throw error;
     }
   };
@@ -53,10 +86,6 @@ class FirebaseService {
   signOut = async () => {
     try {
       await auth().signOut();
-      if (await GoogleSignin.isSignedIn()) {
-        await GoogleSignin.revokeAccess();
-        await GoogleSignin.signOut();
-      }
     } catch (error) {
       throw error;
     }
