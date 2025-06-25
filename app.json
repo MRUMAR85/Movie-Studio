@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "MovieStudioApp",
+    "slug": "MovieStudioApp",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/splash-icon.png",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F0F1A"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/splash-icon.png",
+        "backgroundColor": "#0F0F1A"
+      },
+      "package": "com.rehan.moviestudioapp"
+    },
+    "web": {
+      "favicon": "./assets/splash-icon.png"
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableProguardInReleaseBuilds": false,
+            "extraProguardRules": "",
+            "enableShrinkResourcesInReleaseBuilds": false,
+            "enableDangerousExperimentalLeanBuilds": false,
+            "useLegacyPackaging": false,
+            "extraMavenRepos": [],
+            "packagingOptions": {
+              "pickFirsts": []
+            }
+          }
+        }
+      ]
+    ]
+  }
+}

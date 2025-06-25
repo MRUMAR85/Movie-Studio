@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "112245194319",
+    "project_id": "ott-app-afe9b",
+    "storage_bucket": "ott-app-afe9b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:112245194319:android:cbb2e2fa1b04427437f43a",
+        "android_client_info": {
+          "package_name": "com.ott.ottmovie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "112245194319-m5l0vefpg9eo4l4r2opmn8ht5aqi0ohu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ott.ottmovie",
+            "certificate_hash": "1111111111111111111111111111111111111111"
+          }
+        },
+        {
+          "client_id": "112245194319-7kjhq99hcfgpp2h9hucumpi9rqnk3sno.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiDevhovE3yVfgqjSaijLtF-zEaSQfh9k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "112245194319-7kjhq99hcfgpp2h9hucumpi9rqnk3sno.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "112245194319-vpqs215e1pnqphg7boi56dj06o78kt8q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ott.ottmovie"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
