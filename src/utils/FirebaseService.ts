@@ -4,7 +4,6 @@
 // npm install @react-native-firebase/app @react-native-firebase/auth @react-native-google-signin/google-signin
 
 import { 
-  getAuth, 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
   signOut as firebaseSignOut, 
@@ -15,21 +14,13 @@ import {
 } from 'firebase/auth';
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
-import { firebaseApp } from '../../App';
+import { auth } from './firebase';
+import { GOOGLE_CONFIG, APP_CONFIG } from './env';
 
-// Initialize Firebase Auth with our app instance
-const auth = getAuth(firebaseApp);
+console.log('Firebase Auth initialized in FirebaseService');
 
 // Register the web browser redirect handler
 WebBrowser.maybeCompleteAuthSession();
-
-// Google OAuth configuration
-const googleConfig = {
-  expoClientId: '112245194319-7kjhq99hcfgpp2h9hucumpi9rqnk3sno.apps.googleusercontent.com',
-  webClientId: '112245194319-7kjhq99hcfgpp2h9hucumpi9rqnk3sno.apps.googleusercontent.com',
-  androidClientId: '112245194319-7kjhq99hcfgpp2h9hucumpi9rqnk3sno.apps.googleusercontent.com',
-  iosClientId: '112245194319-7kjhq99hcfgpp2h9hucumpi9rqnk3sno.apps.googleusercontent.com',
-};
 
 class FirebaseService {
   // Check if user is logged in
@@ -40,8 +31,12 @@ class FirebaseService {
   // Sign up with email and password
   signUp = async (email: string, password: string): Promise<UserCredential> => {
     try {
-      return await createUserWithEmailAndPassword(auth, email, password);
+      console.log(`Attempting to sign up with email: ${email}`);
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+      console.log('Sign up successful');
+      return result;
     } catch (error) {
+      console.error('Sign up error:', error);
       throw error;
     }
   };
@@ -49,8 +44,12 @@ class FirebaseService {
   // Sign in with email and password
   signIn = async (email: string, password: string): Promise<UserCredential> => {
     try {
-      return await signInWithEmailAndPassword(auth, email, password);
+      console.log(`Attempting to sign in with email: ${email}`);
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      console.log('Sign in successful');
+      return result;
     } catch (error) {
+      console.error('Sign in error:', error);
       throw error;
     }
   };
@@ -60,7 +59,7 @@ class FirebaseService {
     try {
       // Configure the auth session
       const redirectUrl = AuthSession.makeRedirectUri({
-        scheme: 'moviestudioapp'
+        scheme: APP_CONFIG.scheme
       });
       
       console.log('Redirect URL:', redirectUrl);
@@ -73,7 +72,7 @@ class FirebaseService {
       
       // Start the auth flow
       const request = new AuthSession.AuthRequest({
-        clientId: googleConfig.webClientId,
+        clientId: GOOGLE_CONFIG.webClientId,
         redirectUri: redirectUrl,
         responseType: AuthSession.ResponseType.IdToken,
         scopes: ['openid', 'profile', 'email'],

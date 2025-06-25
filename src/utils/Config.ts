@@ -1,8 +1,9 @@
 // Configuration file for API keys and other settings
+import { APP_CONFIG, TMDB_CONFIG } from './env';
 
 // App Configuration
-export const APP_NAME = "Movie Studio";
-export const APP_VERSION = "1.0.0";
+export const APP_NAME = APP_CONFIG.name;
+export const APP_VERSION = APP_CONFIG.version;
 
 // PayPal Configuration
 export const PAYPAL_MODE = "SANDBOX"; 
@@ -10,10 +11,10 @@ export const PAYPAL_ID = "AS0glW8Jdc0S2BHQe88vmVjcuLCSQVgyPRKAJj9QQGiGeewk25PAzI
 
 // TMDB API Configuration
 // The Movie Database (TMDB) provides a free API for movie data
-export const TMDB_API_KEY = "a8b8b003f5dc783925bf85925c2a1029"; // User's API key
-export const TMDB_API_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhOGI4YjAwM2Y1ZGM3ODM5MjViZjg1OTI1YzJhMTAyOSIsIm5iZiI6MTc1MDgyNzQzOS4yNDk5OTk4LCJzdWIiOiI2ODViODFhZjMwNzM1MGExY2FjOWNmMTAiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.gLQidVf1KJSJD23B5BMEZOw06z10tuN0YYu7EGnv4vg"; // User's API token
-export const TMDB_API_BASE_URL = "https://api.themoviedb.org/3";
-export const TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
+export const TMDB_API_KEY = TMDB_CONFIG.apiKey;
+export const TMDB_API_TOKEN = TMDB_CONFIG.apiToken;
+export const TMDB_API_BASE_URL = TMDB_CONFIG.baseUrl;
+export const TMDB_IMAGE_BASE_URL = TMDB_CONFIG.imageBaseUrl;
 export const TMDB_IMAGE_SIZES = {
   poster: {
     small: "w185",
