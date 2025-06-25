@@ -3,7 +3,16 @@
 // We need to install these packages:
 // npm install @react-native-firebase/app @react-native-firebase/auth @react-native-google-signin/google-signin
 
-import auth from '@react-native-firebase/auth';
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  signOut as firebaseSignOut, 
+  sendPasswordResetEmail,
+  GoogleAuthProvider,
+  signInWithCredential,
+  UserCredential
+} from 'firebase/auth';
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 
@@ -21,29 +30,32 @@ const googleConfig = {
 class FirebaseService {
   // Check if user is logged in
   getCurrentUser = () => {
-    return auth().currentUser;
+    const auth = getAuth();
+    return auth.currentUser;
   };
 
   // Sign up with email and password
-  signUp = async (email: string, password: string) => {
+  signUp = async (email: string, password: string): Promise<UserCredential> => {
     try {
-      return await auth().createUserWithEmailAndPassword(email, password);
+      const auth = getAuth();
+      return await createUserWithEmailAndPassword(auth, email, password);
     } catch (error) {
       throw error;
     }
   };
 
   // Sign in with email and password
-  signIn = async (email: string, password: string) => {
+  signIn = async (email: string, password: string): Promise<UserCredential> => {
     try {
-      return await auth().signInWithEmailAndPassword(email, password);
+      const auth = getAuth();
+      return await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
       throw error;
     }
   };
 
   // Sign in with Google using Expo Auth Session
-  signInWithGoogle = async () => {
+  signInWithGoogle = async (): Promise<UserCredential> => {
     try {
       // Configure the auth session
       const redirectUrl = AuthSession.makeRedirectUri();
@@ -69,10 +81,11 @@ class FirebaseService {
         const { id_token } = result.params;
         
         // Create a credential with the token
-        const credential = auth.GoogleAuthProvider.credential(id_token);
+        const auth = getAuth();
+        const credential = GoogleAuthProvider.credential(id_token);
         
         // Sign in with the credential
-        return await auth().signInWithCredential(credential);
+        return await signInWithCredential(auth, credential);
       } else {
         throw new Error('Google sign in was cancelled or failed');
       }
@@ -83,18 +96,20 @@ class FirebaseService {
   };
 
   // Sign out
-  signOut = async () => {
+  signOut = async (): Promise<void> => {
     try {
-      await auth().signOut();
+      const auth = getAuth();
+      await firebaseSignOut(auth);
     } catch (error) {
       throw error;
     }
   };
 
   // Reset password
-  resetPassword = async (email: string) => {
+  resetPassword = async (email: string): Promise<void> => {
     try {
-      await auth().sendPasswordResetEmail(email);
+      const auth = getAuth();
+      await sendPasswordResetEmail(auth, email);
     } catch (error) {
       throw error;
     }
