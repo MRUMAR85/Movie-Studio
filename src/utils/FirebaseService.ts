@@ -3,11 +3,6 @@
 // We need to install these packages:
 // npm install @react-native-firebase/app @react-native-firebase/auth @react-native-google-signin/google-signin
 
-// This is a placeholder for the actual Firebase service implementation
-// The commented code below shows what the final implementation would look like
-// after installing the required dependencies
-
-/*
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
@@ -77,72 +72,4 @@ class FirebaseService {
   };
 }
 
-export default new FirebaseService();
-*/
-
-// Mock implementation for development
-class MockFirebaseService {
-  // Keep track of users for mock authentication
-  private mockUsers = [
-    { email: 'test@example.com', password: 'password123' }
-  ];
-  
-  // Keep track of current user
-  private currentUserData: { email: string } | null = null;
-
-  getCurrentUser = () => {
-    return this.currentUserData;
-  };
-
-  signUp = async (email: string, password: string) => {
-    console.log('Mock sign up with:', email);
-    
-    // Check if user already exists
-    const existingUser = this.mockUsers.find(user => user.email === email);
-    if (existingUser) {
-      throw new Error('User already exists');
-    }
-    
-    // Add new user
-    this.mockUsers.push({ email, password });
-    this.currentUserData = { email };
-    
-    return { user: { email } };
-  };
-
-  signIn = async (email: string, password: string) => {
-    console.log('Mock sign in with:', email);
-    
-    // Check credentials
-    const user = this.mockUsers.find(u => u.email === email && u.password === password);
-    if (!user) {
-      // For development, auto-create user if not exists
-      this.mockUsers.push({ email, password });
-      this.currentUserData = { email };
-      return { user: { email } };
-    }
-    
-    this.currentUserData = { email };
-    return { user: { email } };
-  };
-
-  signInWithGoogle = async () => {
-    console.log('Mock sign in with Google');
-    const email = 'google@example.com';
-    this.currentUserData = { email };
-    return { user: { email } };
-  };
-
-  signOut = async () => {
-    console.log('Mock sign out');
-    this.currentUserData = null;
-    return true;
-  };
-
-  resetPassword = async (email: string) => {
-    console.log('Mock reset password for:', email);
-    return true;
-  };
-}
-
-export default new MockFirebaseService(); 
+export default new FirebaseService(); 

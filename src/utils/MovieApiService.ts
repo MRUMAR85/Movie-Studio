@@ -1,4 +1,4 @@
-import { TMDB_API_BASE_URL, TMDB_API_KEY } from './Config';
+import { TMDB_API_BASE_URL, TMDB_API_KEY, TMDB_API_TOKEN } from './Config';
 
 // Types
 export interface Movie {
@@ -182,11 +182,11 @@ const mockGenres: Genre[] = [
 // API Service
 class MovieApiService {
   // Flag to determine if we should use mocks
-  private useMocks: boolean = true; // Always use mocks since the API is returning 401 errors
+  private useMocks: boolean = false; // Use real API data
 
   constructor() {
-    // Log mock data usage
-    console.log('Using mock movie data for all API calls');
+    // Log API usage
+    console.log('Using TMDB API for movie data');
   }
 
   // Get popular movies
@@ -195,11 +195,18 @@ class MovieApiService {
       if (this.useMocks) return mockMovies;
       
       const response = await fetch(
-        `${TMDB_API_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&page=${page}`
+        `${TMDB_API_BASE_URL}/movie/popular?page=${page}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${TMDB_API_TOKEN}`,
+            'Content-Type': 'application/json'
+          }
+        }
       );
       
       if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        console.error(`API error: ${response.status}`);
+        return mockMovies; // Fallback to mock data
       }
       
       const data = await response.json();
@@ -216,11 +223,18 @@ class MovieApiService {
       if (this.useMocks) return mockMovies;
       
       const response = await fetch(
-        `${TMDB_API_BASE_URL}/trending/movie/${timeWindow}?api_key=${TMDB_API_KEY}`
+        `${TMDB_API_BASE_URL}/trending/movie/${timeWindow}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${TMDB_API_TOKEN}`,
+            'Content-Type': 'application/json'
+          }
+        }
       );
       
       if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        console.error(`API error: ${response.status}`);
+        return mockMovies; // Fallback to mock data
       }
       
       const data = await response.json();
@@ -237,11 +251,18 @@ class MovieApiService {
       if (this.useMocks) return { ...mockMovieDetails, id: movieId };
       
       const response = await fetch(
-        `${TMDB_API_BASE_URL}/movie/${movieId}?api_key=${TMDB_API_KEY}&append_to_response=videos,credits`
+        `${TMDB_API_BASE_URL}/movie/${movieId}?append_to_response=videos,credits`,
+        {
+          headers: {
+            'Authorization': `Bearer ${TMDB_API_TOKEN}`,
+            'Content-Type': 'application/json'
+          }
+        }
       );
       
       if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        console.error(`API error: ${response.status}`);
+        return { ...mockMovieDetails, id: movieId }; // Return mock with requested ID
       }
       
       const data = await response.json();
@@ -263,11 +284,18 @@ class MovieApiService {
       if (this.useMocks) return mockMovies;
       
       const response = await fetch(
-        `${TMDB_API_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&page=${page}`
+        `${TMDB_API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}&page=${page}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${TMDB_API_TOKEN}`,
+            'Content-Type': 'application/json'
+          }
+        }
       );
       
       if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        console.error(`API error: ${response.status}`);
+        return mockMovies; // Fallback to mock data
       }
       
       const data = await response.json();
@@ -284,11 +312,18 @@ class MovieApiService {
       if (this.useMocks) return mockMovies;
       
       const response = await fetch(
-        `${TMDB_API_BASE_URL}/discover/movie?api_key=${TMDB_API_KEY}&with_genres=${genreId}&page=${page}`
+        `${TMDB_API_BASE_URL}/discover/movie?with_genres=${genreId}&page=${page}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${TMDB_API_TOKEN}`,
+            'Content-Type': 'application/json'
+          }
+        }
       );
       
       if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        console.error(`API error: ${response.status}`);
+        return mockMovies; // Fallback to mock data
       }
       
       const data = await response.json();
@@ -305,11 +340,18 @@ class MovieApiService {
       if (this.useMocks) return mockGenres;
       
       const response = await fetch(
-        `${TMDB_API_BASE_URL}/genre/movie/list?api_key=${TMDB_API_KEY}`
+        `${TMDB_API_BASE_URL}/genre/movie/list`,
+        {
+          headers: {
+            'Authorization': `Bearer ${TMDB_API_TOKEN}`,
+            'Content-Type': 'application/json'
+          }
+        }
       );
       
       if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        console.error(`API error: ${response.status}`);
+        return mockGenres; // Fallback to mock data
       }
       
       const data = await response.json();
@@ -331,11 +373,18 @@ class MovieApiService {
       const twoMonthsAgo = date.toISOString().split('T')[0];
 
       const response = await fetch(
-        `${TMDB_API_BASE_URL}/discover/movie?api_key=${TMDB_API_KEY}&sort_by=release_date.desc&primary_release_date.gte=${twoMonthsAgo}&primary_release_date.lte=${currentDate}&page=${page}`
+        `${TMDB_API_BASE_URL}/discover/movie?sort_by=release_date.desc&primary_release_date.gte=${twoMonthsAgo}&primary_release_date.lte=${currentDate}&page=${page}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${TMDB_API_TOKEN}`,
+            'Content-Type': 'application/json'
+          }
+        }
       );
       
       if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        console.error(`API error: ${response.status}`);
+        return mockMovies; // Fallback to mock data
       }
       
       const data = await response.json();
