@@ -1,9 +1,10 @@
 import React, { ErrorInfo, useState, useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import AppNavigator from './src/navigation/AppNavigator';
 import { initializeApp } from 'firebase/app';
+import Constants from 'expo-constants';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -14,6 +15,9 @@ const firebaseConfig = {
   messagingSenderId: "112245194319",
   appId: "1:112245194319:web:7b1a9a9c9a9a9c9c9a9a9c"
 };
+
+// Initialize Firebase
+export const firebaseApp = initializeApp(firebaseConfig);
 
 // Simple error fallback component
 const ErrorFallback = ({ error, resetError }: { error: Error, resetError: () => void }) => (
@@ -53,15 +57,29 @@ class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasErr
 }
 
 const App = () => {
+  const [isFirebaseInitialized, setIsFirebaseInitialized] = useState(false);
+
   useEffect(() => {
-    // Initialize Firebase
+    // Check if Firebase is initialized
     try {
-      initializeApp(firebaseConfig);
-      console.log('Firebase initialized successfully');
+      if (firebaseApp) {
+        console.log('Firebase initialized successfully');
+        setIsFirebaseInitialized(true);
+      }
     } catch (error) {
       console.error('Firebase initialization error:', error);
     }
   }, []);
+
+  // Show loading screen while Firebase initializes
+  if (!isFirebaseInitialized) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#FF3B30" />
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <ErrorBoundary>
@@ -104,6 +122,17 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: '500',
+  },
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: '#171720',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    marginTop: 16,
   }
 });
 

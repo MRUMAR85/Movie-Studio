@@ -15,6 +15,10 @@ import {
 } from 'firebase/auth';
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
+import { firebaseApp } from '../../App';
+
+// Initialize Firebase Auth with our app instance
+const auth = getAuth(firebaseApp);
 
 // Register the web browser redirect handler
 WebBrowser.maybeCompleteAuthSession();
@@ -30,14 +34,12 @@ const googleConfig = {
 class FirebaseService {
   // Check if user is logged in
   getCurrentUser = () => {
-    const auth = getAuth();
     return auth.currentUser;
   };
 
   // Sign up with email and password
   signUp = async (email: string, password: string): Promise<UserCredential> => {
     try {
-      const auth = getAuth();
       return await createUserWithEmailAndPassword(auth, email, password);
     } catch (error) {
       throw error;
@@ -47,7 +49,6 @@ class FirebaseService {
   // Sign in with email and password
   signIn = async (email: string, password: string): Promise<UserCredential> => {
     try {
-      const auth = getAuth();
       return await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
       throw error;
@@ -58,7 +59,12 @@ class FirebaseService {
   signInWithGoogle = async (): Promise<UserCredential> => {
     try {
       // Configure the auth session
-      const redirectUrl = AuthSession.makeRedirectUri();
+      const redirectUrl = AuthSession.makeRedirectUri({
+        scheme: 'moviestudioapp'
+      });
+      
+      console.log('Redirect URL:', redirectUrl);
+      
       const discovery = {
         authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
         tokenEndpoint: 'https://oauth2.googleapis.com/token',
@@ -81,7 +87,6 @@ class FirebaseService {
         const { id_token } = result.params;
         
         // Create a credential with the token
-        const auth = getAuth();
         const credential = GoogleAuthProvider.credential(id_token);
         
         // Sign in with the credential
@@ -98,7 +103,6 @@ class FirebaseService {
   // Sign out
   signOut = async (): Promise<void> => {
     try {
-      const auth = getAuth();
       await firebaseSignOut(auth);
     } catch (error) {
       throw error;
@@ -108,7 +112,6 @@ class FirebaseService {
   // Reset password
   resetPassword = async (email: string): Promise<void> => {
     try {
-      const auth = getAuth();
       await sendPasswordResetEmail(auth, email);
     } catch (error) {
       throw error;
