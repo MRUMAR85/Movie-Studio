@@ -110,7 +110,7 @@ A React Native mobile application for browsing and discovering movies using the 
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+see the LICENSE file for details.
 
 ## Acknowledgments
 
